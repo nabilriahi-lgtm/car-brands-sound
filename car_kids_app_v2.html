@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Cars for kids</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f8fbff;color:#0f172a}
+body{min-height:100vh}
+.hidden{display:none!important}
+header{background:linear-gradient(135deg,#2563eb,#1d4ed8);color:white;padding:20px 14px 16px;text-align:center}
+header h1{margin:0;font-size:32px;line-height:1.1}
+header p{margin:8px 0 0;color:#dbeafe;font-size:15px}
+.topbar{position:sticky;top:0;z-index:30;background:rgba(248,251,255,.97);backdrop-filter:blur(12px);border-bottom:1px solid #dbeafe;padding:10px 12px}
+.topbar-inner{max-width:980px;margin:0 auto;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.left-actions,.right-actions{display:flex;gap:10px;flex-wrap:wrap}
+.big-toggle{border:0;border-radius:18px;padding:14px 18px;font-size:18px;font-weight:900;background:#16a34a;color:white;box-shadow:0 8px 20px rgba(22,163,74,.20)}
+.big-toggle.off{background:#2563eb}
+.small-btn{border:0;border-radius:14px;padding:11px 14px;font-size:15px;font-weight:800;background:#e0ecff;color:#1d4ed8}
+.wrap{max-width:980px;margin:0 auto;padding:16px 14px 40px}
+.card{background:white;border:1px solid #dbeafe;border-radius:26px;padding:18px;box-shadow:0 12px 28px rgba(37,99,235,.08)}
+.home-grid{display:grid;grid-template-columns:1fr;gap:14px}
+.menu-btn{border:0;border-radius:26px;background:white;padding:22px 18px;text-align:left;box-shadow:0 12px 28px rgba(37,99,235,.10);border:2px solid #dbeafe}
+.menu-btn .emoji{font-size:42px;display:block;margin-bottom:8px}
+.menu-btn .title{font-size:28px;font-weight:900;display:block}
+.menu-btn .sub{font-size:15px;color:#475569;display:block;margin-top:4px}
+.mascot{display:flex;gap:12px;align-items:center;margin-bottom:14px}
+.mascot .car{width:76px;height:76px;border-radius:22px;background:#fef3c7;display:flex;align-items:center;justify-content:center;font-size:40px;box-shadow:inset 0 0 0 2px #fde68a}
+.mascot .bubble{flex:1;background:#eff6ff;border-radius:22px;padding:14px 16px;font-weight:800;font-size:18px;color:#1e3a8a}
+.learn-logo{height:230px;display:flex;align-items:center;justify-content:center;margin:8px 0 12px}
+.learn-logo img{max-width:210px;max-height:200px;object-fit:contain}
+.fallback{width:160px;height:160px;border-radius:36px;background:#eef2ff;color:#1d4ed8;display:flex;align-items:center;justify-content:center;font-size:52px;font-weight:900}
+.brand-name{text-align:center;font-size:36px;font-weight:900;margin:12px 0 20px}
+.learn-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.learn-actions .navbtn,.big-primary,.big-secondary{border:0;border-radius:22px;padding:18px 14px;font-size:22px;font-weight:900}
+.navbtn{background:#e0ecff;color:#1d4ed8}
+.big-primary{background:#f59e0b;color:white;width:100%;margin:0 0 14px}
+.big-secondary{background:#ecfeff;color:#155e75;width:100%;margin-top:10px}
+.quiz-target{text-align:center;font-size:32px;font-weight:900;color:#1d4ed8;margin:8px 0 12px}
+.quiz-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.choice{border:2px solid #dbeafe;border-radius:24px;background:white;padding:18px 10px;min-height:210px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;box-shadow:0 8px 16px rgba(37,99,235,.06)}
+.choice:active{transform:scale(.98)}
+.choice-logo{height:110px;display:flex;align-items:center;justify-content:center}
+.choice-logo img{max-width:130px;max-height:110px;object-fit:contain}
+.choice-name{font-size:20px;font-weight:900;text-align:center}
+.feedback{text-align:center;font-size:30px;font-weight:900;min-height:44px;margin:6px 0 10px}
+.stars{text-align:center;font-size:28px;letter-spacing:4px;margin-bottom:10px}
+.confetti{position:fixed;inset:0;pointer-events:none;display:none;z-index:99}
+.confetti.show{display:block}
+.confetti span{position:absolute;top:-20px;width:12px;height:18px;border-radius:4px;animation:fall 1.6s linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg);opacity:0}}
+.gallery-title{text-align:center;font-size:18px;font-weight:900;color:#475569;margin-bottom:12px}
+.gallery-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.gallery-card{border:2px solid #dbeafe;border-radius:24px;background:white;padding:16px 8px;min-height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
+.gallery-logo{height:110px;display:flex;align-items:center;justify-content:center}
+.gallery-logo img{max-width:130px;max-height:110px;object-fit:contain}
+.gallery-name{font-size:18px;font-weight:900;text-align:center}
+.footer-note{text-align:center;color:#64748b;font-size:13px;margin-top:18px}
+.modal-bg{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:center;justify-content:center;padding:20px;z-index:80}
+.modal-bg.show{display:flex}
+.modal{background:white;border-radius:26px;padding:20px;max-width:460px;width:100%;box-shadow:0 20px 50px rgba(15,23,42,.2)}
+.modal h2{margin:0 0 12px;font-size:26px}
+.lang-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
+.lang-btn{border:2px solid #dbeafe;background:#f8fbff;border-radius:18px;padding:16px;font-size:18px;font-weight:900}
+.lang-btn.active{border-color:#2563eb;background:#e0ecff;color:#1d4ed8}
+@media (min-width:760px){.home-grid{grid-template-columns:1fr 1fr 1fr}.gallery-grid{grid-template-columns:repeat(4,1fr)}}
+</style>
+</head>
+<body>
+<div class="confetti" id="confetti"></div>
+
+<header>
+  <h1 id="title"></h1>
+  <p id="subtitle"></p>
+</header>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="left-actions">
+      <button id="soundBtn" class="big-toggle off"></button>
+    </div>
+    <div class="right-actions">
+      <button id="parentsBtn" class="small-btn"></button>
+      <button id="homeBtn" class="small-btn"></button>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <section id="homeScreen">
+    <div class="mascot">
+      <div class="car">🚙</div>
+      <div class="bubble" id="homeBubble"></div>
+    </div>
+
+    <div class="home-grid">
+      <button class="menu-btn" id="learnBtn">
+        <span class="emoji">👀</span>
+        <span class="title" id="learnTitle"></span>
+        <span class="sub" id="learnSub"></span>
+      </button>
+
+      <button class="menu-btn" id="quizBtn">
+        <span class="emoji">🎯</span>
+        <span class="title" id="quizTitle"></span>
+        <span class="sub" id="quizSub"></span>
+      </button>
+
+      <button class="menu-btn" id="allBtn">
+        <span class="emoji">🚗</span>
+        <span class="title" id="allTitle"></span>
+        <span class="sub" id="allSub"></span>
+      </button>
+    </div>
+
+    <div class="footer-note" id="footerHint"></div>
+  </section>
+
+  <section id="learnScreen" class="hidden">
+    <div class="mascot">
+      <div class="car">🚙</div>
+      <div class="bubble" id="learnBubble"></div>
+    </div>
+
+    <div class="card">
+      <div class="learn-logo" id="learnLogo"></div>
+      <div class="brand-name" id="learnName"></div>
+      <button class="big-primary" id="sayAgainBtn"></button>
+      <div class="learn-actions">
+        <button class="navbtn" id="prevBtn"></button>
+        <button class="navbtn" id="nextBtn"></button>
+      </div>
+    </div>
+  </section>
+
+  <section id="quizScreen" class="hidden">
+    <div class="mascot">
+      <div class="car">🚙</div>
+      <div class="bubble" id="quizBubble"></div>
+    </div>
+
+    <div class="card">
+      <div class="stars" id="stars">☆☆☆</div>
+      <div class="feedback" id="feedback"></div>
+      <div class="quiz-target" id="quizTarget"></div>
+      <button class="big-primary" id="repeatQuizBtn"></button>
+      <div class="quiz-grid" id="quizGrid"></div>
+      <button class="big-secondary" id="newQuizBtn"></button>
+    </div>
+  </section>
+
+  <section id="allScreen" class="hidden">
+    <div class="mascot">
+      <div class="car">🚙</div>
+      <div class="bubble" id="galleryBubble"></div>
+    </div>
+    <div class="gallery-title" id="galleryTitle"></div>
+    <div class="gallery-grid" id="galleryGrid"></div>
+  </section>
+</div>
+
+<div class="modal-bg" id="settingsModal">
+  <div class="modal">
+    <h2 id="settingsTitle"></h2>
+    <div id="chooseLang"></div>
+    <div class="lang-row">
+      <button class="lang-btn" id="langFr"></button>
+      <button class="lang-btn" id="langEn"></button>
+    </div>
+    <button class="big-secondary" id="closeSettings"></button>
+  </div>
+</div>
+
+<script>
+const brands = [{"name": "Toyota", "icon": "toyota", "domain": "toyota.com"}, {"name": "Honda", "icon": "honda", "domain": "honda.com"}, {"name": "Ford", "icon": "ford", "domain": "ford.com"}, {"name": "Chevrolet", "icon": "chevrolet", "domain": "chevrolet.com"}, {"name": "Nissan", "icon": "nissan", "domain": "nissan-global.com"}, {"name": "Hyundai", "icon": "hyundai", "domain": "hyundai.com"}, {"name": "Kia", "icon": "kia", "domain": "kia.com"}, {"name": "Tesla", "icon": "tesla", "domain": "tesla.com"}, {"name": "Jeep", "icon": "jeep", "domain": "jeep.com"}, {"name": "Subaru", "icon": "subaru", "domain": "subaru.com"}, {"name": "BMW", "icon": "bmw", "domain": "bmw.com"}, {"name": "Mercedes", "icon": "mercedesbenz", "domain": "mercedes-benz.com"}, {"name": "Audi", "icon": "audi", "domain": "audi.com"}, {"name": "Lexus", "icon": "lexus", "domain": "lexus.com"}, {"name": "Acura", "icon": "acura", "domain": "acura.com"}, {"name": "GMC", "icon": "gmc", "domain": "gmc.com"}, {"name": "Ram", "icon": "ram", "domain": "ramtrucks.com"}, {"name": "Volkswagen", "icon": "volkswagen", "domain": "volkswagen.com"}, {"name": "Mazda", "icon": "mazda", "domain": "mazda.com"}, {"name": "Porsche", "icon": "porsche", "domain": "porsche.com"}];
+const T = {"fr": {"title": "🚗 Voitures pour Ahmed", "subtitle": "Version enfant : logos plus grands, anglais/français, et marques courantes dans le Maryland.", "sound_off": "🔊 Activer le son", "sound_on": "✅ Son activé", "home": "🏠 Accueil", "parents": "⚙️ Parents", "hello": "Bonjour ! Je m’appelle Zoom. On va apprendre les marques de voitures !", "learn": "Apprendre", "learn_sub": "Une marque à la fois, très grande.", "quiz": "Trouve la marque", "quiz_sub": "Écoute et touche le bon logo.", "all": "Toutes les voitures", "all_sub": "Les voitures qu’on voit souvent ici.", "hint": "Conseil parent : commence par “Apprendre”, puis “Trouve la marque”.", "touch_logo": "Touche le logo ou le bouton pour écouter.", "again": "🔊 Encore", "before": "⬅️ Avant", "after": "Après ➡️", "listen_and_touch": "Écoute bien, puis touche le bon logo.", "repeat": "🔊 Répéter", "new_question": "➡️ Nouvelle question", "touch_to_hear": "Touche une voiture pour entendre son nom.", "activate_first": "Active d'abord le son", "well_done": "Bravo !", "try_again": "Essaie encore", "find": "Trouve", "here_is": "Voici", "settings_title": "Réglages parent", "choose_lang": "Langue de l’application :", "fr_btn": "🇫🇷 Français", "en_btn": "🇺🇸 English", "close": "Fermer", "cars_seen_here": "Marques fréquentes autour du Maryland / USA"}, "en": {"title": "🚗 Cars for Ahmed", "subtitle": "Kids version: bigger logos, English/French, and common brands seen around Maryland.", "sound_off": "🔊 Turn on sound", "sound_on": "✅ Sound on", "home": "🏠 Home", "parents": "⚙️ Parents", "hello": "Hello! My name is Zoom. Let's learn car brands!", "learn": "Learn", "learn_sub": "One brand at a time, extra big.", "quiz": "Find the brand", "quiz_sub": "Listen and tap the right logo.", "all": "All cars", "all_sub": "Cars we often see around here.", "hint": "Parent tip: start with Learn, then Find the brand.", "touch_logo": "Tap the logo or the button to hear it.", "again": "🔊 Again", "before": "⬅️ Back", "after": "Next ➡️", "listen_and_touch": "Listen carefully, then tap the right logo.", "repeat": "🔊 Repeat", "new_question": "➡️ New question", "touch_to_hear": "Tap a car brand to hear its name.", "activate_first": "Turn on sound first", "well_done": "Great job!", "try_again": "Try again", "find": "Find", "here_is": "This is", "settings_title": "Parent settings", "choose_lang": "App language:", "fr_btn": "🇫🇷 Français", "en_btn": "🇺🇸 English", "close": "Close", "cars_seen_here": "Common brands around Maryland / USA"}};
+
+let lang = localStorage.getItem('kidsCarsLang') || 'fr';
+let soundOn = false;
+let voice = null;
+let learnIndex = 0;
+let currentQuizAnswer = null;
+let stars = 0;
+
+const soundBtn = document.getElementById('soundBtn');
+const homeBtn = document.getElementById('homeBtn');
+const parentsBtn = document.getElementById('parentsBtn');
+const settingsModal = document.getElementById('settingsModal');
+const langFr = document.getElementById('langFr');
+const langEn = document.getElementById('langEn');
+
+const homeScreen = document.getElementById('homeScreen');
+const learnScreen = document.getElementById('learnScreen');
+const quizScreen = document.getElementById('quizScreen');
+const allScreen = document.getElementById('allScreen');
+const confetti = document.getElementById('confetti');
+
+const pron = {
+  fr: {
+    "BMW":"B M W","GMC":"G M C","RAM":"Ram","Ram":"Ram","Audi":"Audi","Acura":"Acura",
+    "Jeep":"Jeep","Tesla":"Tesla","Mazda":"Mazda","Nissan":"Nissan","Lexus":"Lexus",
+    "Chevrolet":"Chevrolet","Mercedes":"Mercedes","Porsche":"Porsche","Volkswagen":"Volkswagen"
+  },
+  en: {
+    "BMW":"B M W","GMC":"G M C","RAM":"Ram","Ram":"Ram","Audi":"Audi","Acura":"Acura",
+    "Jeep":"Jeep","Tesla":"Tesla","Mazda":"Mazda","Nissan":"Nissan","Lexus":"Lexus",
+    "Chevrolet":"Chevrolet","Mercedes":"Mercedes","Porsche":"Porsche","Volkswagen":"Volkswagen"
+  }
+};
+
+function tr(key) {
+  return T[lang][key];
+}
+
+function loadVoices(){
+  if(!('speechSynthesis' in window)) return;
+  const vs = speechSynthesis.getVoices();
+  if(lang === 'fr'){
+    voice = vs.find(v => /^fr/i.test(v.lang)) || vs.find(v => /^en-US/i.test(v.lang)) || vs[0] || null;
+  } else {
+    voice = vs.find(v => /^en-US/i.test(v.lang)) || vs.find(v => /^en/i.test(v.lang)) || vs.find(v => /^fr/i.test(v.lang)) || vs[0] || null;
+  }
+}
+loadVoices();
+if('speechSynthesis' in window) speechSynthesis.onvoiceschanged = loadVoices;
+
+function speak(text){
+  if(!soundOn || !('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  if(voice) {
+    u.voice = voice;
+    u.lang = voice.lang;
+  } else {
+    u.lang = lang === 'fr' ? 'fr-FR' : 'en-US';
+  }
+  u.rate = 0.86;
+  u.pitch = 1.02;
+  u.volume = 1;
+  speechSynthesis.speak(u);
+}
+
+function sayBrand(name){
+  speak((pron[lang] && pron[lang][name]) || name);
+}
+
+function activateSound(){
+  if(!('speechSynthesis' in window)){
+    soundBtn.textContent = "❌ Safari";
+    return;
+  }
+  loadVoices();
+  const u = new SpeechSynthesisUtterance(lang === 'fr' ? "Bonjour" : "Hello");
+  if(voice) {
+    u.voice = voice;
+    u.lang = voice.lang;
+  } else {
+    u.lang = lang === 'fr' ? 'fr-FR' : 'en-US';
+  }
+  u.volume = 0.05;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(u);
+  soundOn = true;
+  refreshTexts();
+}
+
+function initials(name){
+  return name.split(/\s+|-/).filter(Boolean).map(x => x[0]).join('').slice(0,2).toUpperCase();
+}
+
+function makeLogoElement(brand, className){
+  const box = document.createElement('div');
+  box.className = className;
+
+  const img = document.createElement('img');
+  img.alt = "Logo " + brand.name;
+
+  const sources = [];
+  if(brand.icon){
+    sources.push("https://cdn.simpleicons.org/" + brand.icon + "/111827");
+    sources.push("https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/" + brand.icon + ".svg");
+  }
+  if(brand.domain){
+    sources.push("https://logo.clearbit.com/" + brand.domain);
+    sources.push("https://www.google.com/s2/favicons?sz=128&domain=" + brand.domain);
+  }
+
+  let i = 0;
+  const fallback = () => {
+    box.innerHTML = '';
+    const fb = document.createElement('div');
+    fb.className = 'fallback';
+    fb.textContent = initials(brand.name);
+    box.appendChild(fb);
+  };
+  const next = () => {
+    if(i >= sources.length) {
+      fallback();
+      return;
+    }
+    img.src = sources[i++];
+  };
+  img.onerror = next;
+  img.onload = () => {
+    box.innerHTML = '';
+    box.appendChild(img);
+  };
+  next();
+  return box;
+}
+
+function showScreen(name){
+  homeScreen.classList.add('hidden');
+  learnScreen.classList.add('hidden');
+  quizScreen.classList.add('hidden');
+  allScreen.classList.add('hidden');
+  if(name === 'home') homeScreen.classList.remove('hidden');
+  if(name === 'learn') learnScreen.classList.remove('hidden');
+  if(name === 'quiz') quizScreen.classList.remove('hidden');
+  if(name === 'all') allScreen.classList.remove('hidden');
+}
+
+function refreshTexts(){
+  document.documentElement.lang = lang;
+  document.getElementById('title').textContent = tr('title');
+  document.getElementById('subtitle').textContent = tr('subtitle');
+  soundBtn.textContent = soundOn ? tr('sound_on') : tr('sound_off');
+  soundBtn.classList.toggle('off', !soundOn);
+  homeBtn.textContent = tr('home');
+  parentsBtn.textContent = tr('parents');
+  document.getElementById('homeBubble').textContent = tr('hello');
+  document.getElementById('learnTitle').textContent = tr('learn');
+  document.getElementById('learnSub').textContent = tr('learn_sub');
+  document.getElementById('quizTitle').textContent = tr('quiz');
+  document.getElementById('quizSub').textContent = tr('quiz_sub');
+  document.getElementById('allTitle').textContent = tr('all');
+  document.getElementById('allSub').textContent = tr('all_sub');
+  document.getElementById('footerHint').textContent = tr('hint');
+  document.getElementById('sayAgainBtn').textContent = tr('again');
+  document.getElementById('prevBtn').textContent = tr('before');
+  document.getElementById('nextBtn').textContent = tr('after');
+  document.getElementById('repeatQuizBtn').textContent = tr('repeat');
+  document.getElementById('newQuizBtn').textContent = tr('new_question');
+  document.getElementById('galleryBubble').textContent = tr('touch_to_hear');
+  document.getElementById('galleryTitle').textContent = tr('cars_seen_here');
+  document.getElementById('settingsTitle').textContent = tr('settings_title');
+  document.getElementById('chooseLang').textContent = tr('choose_lang');
+  document.getElementById('langFr').textContent = tr('fr_btn');
+  document.getElementById('langEn').textContent = tr('en_btn');
+  document.getElementById('closeSettings').textContent = tr('close');
+  document.getElementById('learnBubble').textContent = tr('touch_logo');
+  document.getElementById('quizBubble').textContent = tr('listen_and_touch');
+
+  langFr.classList.toggle('active', lang === 'fr');
+  langEn.classList.toggle('active', lang === 'en');
+
+  if(!learnScreen.classList.contains('hidden')) renderLearn(false);
+  if(!quizScreen.classList.contains('hidden') && currentQuizAnswer) {
+    document.getElementById('quizTarget').textContent = tr('find') + " " + currentQuizAnswer + " !";
+    document.getElementById('quizBubble').textContent = tr('listen_and_touch');
+  }
+}
+
+function renderLearn(say=true){
+  const brand = brands[learnIndex];
+  const logo = document.getElementById('learnLogo');
+  logo.innerHTML = '';
+  const el = makeLogoElement(brand, 'learn-logo');
+  logo.replaceWith(el);
+  el.id = 'learnLogo';
+  el.className = 'learn-logo';
+  el.onclick = () => sayBrand(brand.name);
+  document.getElementById('learnName').textContent = brand.name;
+  document.getElementById('learnBubble').textContent = tr('here_is') + " " + brand.name + " !";
+  if(say) sayBrand(brand.name);
+}
+
+function shuffle(arr){
+  return arr.map(v => [Math.random(), v]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);
+}
+
+function renderQuiz(){
+  document.getElementById('feedback').textContent = "";
+  const answer = brands[Math.floor(Math.random()*brands.length)];
+  currentQuizAnswer = answer.name;
+  const others = shuffle(brands.filter(b => b.name !== answer.name)).slice(0,3);
+  const options = shuffle([answer, ...others]);
+  const grid = document.getElementById('quizGrid');
+  grid.innerHTML = '';
+  document.getElementById('quizTarget').textContent = tr('find') + " " + answer.name + " !";
+  document.getElementById('quizBubble').textContent = tr('listen_and_touch');
+  options.forEach(brand => {
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    const logo = makeLogoElement(brand, 'choice-logo');
+    const name = document.createElement('div');
+    name.className = 'choice-name';
+    name.textContent = brand.name;
+    btn.append(logo, name);
+    btn.onclick = () => checkQuiz(brand.name);
+    grid.appendChild(btn);
+  });
+  sayBrand(answer.name);
+}
+
+function updateStars(){
+  let s = "";
+  for(let i=0;i<3;i++) s += i < stars ? "★" : "☆";
+  document.getElementById('stars').textContent = s;
+}
+
+function launchConfetti(){
+  confetti.innerHTML = '';
+  const colors = ['#f59e0b','#ef4444','#10b981','#3b82f6','#8b5cf6','#ec4899'];
+  for(let i=0;i<30;i++){
+    const piece = document.createElement('span');
+    piece.style.left = Math.random()*100 + 'vw';
+    piece.style.background = colors[i % colors.length];
+    piece.style.animationDelay = (Math.random()*0.25) + 's';
+    confetti.appendChild(piece);
+  }
+  confetti.classList.add('show');
+  setTimeout(()=>confetti.classList.remove('show'),1700);
+}
+
+function checkQuiz(name){
+  const fb = document.getElementById('feedback');
+  if(name === currentQuizAnswer){
+    stars = Math.min(3, stars + 1);
+    updateStars();
+    fb.textContent = "⭐ " + tr('well_done');
+    fb.style.color = "#16a34a";
+    speak(tr('well_done'));
+    launchConfetti();
+    if(stars >= 3){
+      setTimeout(()=>{
+        stars = 0;
+        updateStars();
+      }, 1800);
+    }
+  } else {
+    fb.textContent = "🙂 " + tr('try_again');
+    fb.style.color = "#f59e0b";
+    speak(tr('try_again'));
+  }
+}
+
+function renderGallery(){
+  const grid = document.getElementById('galleryGrid');
+  grid.innerHTML = '';
+  brands.forEach(brand => {
+    const btn = document.createElement('button');
+    btn.className = 'gallery-card';
+    const logo = makeLogoElement(brand, 'gallery-logo');
+    const name = document.createElement('div');
+    name.className = 'gallery-name';
+    name.textContent = brand.name;
+    btn.append(logo, name);
+    btn.onclick = () => sayBrand(brand.name);
+    grid.appendChild(btn);
+  });
+}
+
+document.getElementById('learnBtn').onclick = () => {
+  showScreen('learn');
+  renderLearn(true);
+};
+document.getElementById('quizBtn').onclick = () => {
+  showScreen('quiz');
+  renderQuiz();
+};
+document.getElementById('allBtn').onclick = () => {
+  showScreen('all');
+  renderGallery();
+};
+document.getElementById('sayAgainBtn').onclick = () => sayBrand(brands[learnIndex].name);
+document.getElementById('prevBtn').onclick = () => {
+  learnIndex = (learnIndex - 1 + brands.length) % brands.length;
+  renderLearn(true);
+};
+document.getElementById('nextBtn').onclick = () => {
+  learnIndex = (learnIndex + 1) % brands.length;
+  renderLearn(true);
+};
+document.getElementById('repeatQuizBtn').onclick = () => sayBrand(currentQuizAnswer || "Toyota");
+document.getElementById('newQuizBtn').onclick = () => renderQuiz();
+soundBtn.onclick = activateSound;
+homeBtn.onclick = () => showScreen('home');
+
+parentsBtn.onclick = () => settingsModal.classList.add('show');
+document.getElementById('closeSettings').onclick = () => settingsModal.classList.remove('show');
+settingsModal.onclick = (e) => { if(e.target === settingsModal) settingsModal.classList.remove('show'); };
+langFr.onclick = () => {
+  lang = 'fr';
+  localStorage.setItem('kidsCarsLang', lang);
+  loadVoices();
+  refreshTexts();
+};
+langEn.onclick = () => {
+  lang = 'en';
+  localStorage.setItem('kidsCarsLang', lang);
+  loadVoices();
+  refreshTexts();
+};
+
+updateStars();
+renderGallery();
+refreshTexts();
+showScreen('home');
+</script>
+</body>
+</html>
